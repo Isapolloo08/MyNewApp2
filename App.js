@@ -7,6 +7,7 @@ import HomeScreen from './screens/LoginScreen';
 import DetailsScreen from './screens/DetailsScreen';
 import CustomHeader1 from './screens/CustomHeader';
 import Homescreen1 from './screens/HomeScreen';
+import RegisterScreen from './screens/RegisterScreen';
 import { View } from 'react-native';
 
 
@@ -45,6 +46,18 @@ const App = () => {
                       header: () => <CustomHeader1 title="Welcome" />,
                   }}
               />
+              <Stack.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{
+                headerTintColor: '#FFFFFF', // Text color
+                headerStyle: {
+                backgroundColor: '#710808', // Background color
+                height: 390, // Height of the header
+                width: 834, // Width of the header
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
