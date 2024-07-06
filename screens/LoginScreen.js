@@ -21,6 +21,10 @@ const LoginScreen = ({ navigation }) => {
         setShowPassword(!showPassword);
     };
 
+    const handleRegister = () => {
+        navigation.navigate('Register'); // Navigate to RegisterScreen
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>
@@ -48,7 +52,9 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.bottomTextContainer}>
                 <Text style={styles.bottomText}>Forgot Password?</Text>
-                <Text style={styles.bottomText}>Register</Text>
+                <TouchableOpacity onPress={handleRegister}>
+                    <Text style={styles.bottomText}>Register</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
