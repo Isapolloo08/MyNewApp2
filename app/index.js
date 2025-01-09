@@ -4,16 +4,23 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Modal from 'react-native-modal';
-import { StyleSheet, TouchableOpacity} from 'react-native';
+import { StyleSheet, TouchableOpacity, Text} from 'react-native';
 import 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FMAS1 from '../FMAS/audit';
-import FMAS5 from '../FMAS/budgetadd';
+import FMAS5 from '../FMAS/budgets';
 import FMAS2 from '../FMAS/financial';
-import FMAS3 from '../FMAS/pa';
-import FMAS4 from '../FMAS/RevenueandExpenseTracking';
-import IRCM2 from '../Incident Report and CM/BlotterFrom';
-// import IRCM1 from './Incident Report and CM/BlotterList';
+import FMAS3 from '../FMAS/payroll';
+import FMAS4 from '../FMAS/transact';
+import AuditAdd from '../FMAS/auditadd'
+import Programs from '../FMAS/programs';
+import AddBudget from '../FMAS/budgetadd';
+import ProgramDetail from '../FMAS/programdetail';
+import TransactAdd from '../FMAS/transactadd';
+import AddPayroll from '../FMAS/payrolladd';
+import AddFinancial from '../FMAS/financialadd';
+import IRCM2 from '../Incident Report and CM/Blotter';
+import IRCM1 from '../Incident Report and CM/BlotterList';
 // import IRCM3 from './Incident Report and CM/CaseReport';
 // import IRCM4 from './Incident Report and CM/SummonSchedule';
 import CDSM1 from '../CDSM/Dashboard';
@@ -22,22 +29,6 @@ import CDSM3 from '../CDSM/Resident/Notifications';
 import CDSM4 from '../CDSM/ResourceManagement';
 import CDSM5 from '../CDSM/SecretaryBeneficiaryManagement/BeneficiaryRequests';
 import CDSM6 from '../CDSM/Notification';
-// import FMASSUB1 from '../FMAS/BudgetDashboard';
-// import FMASSUB2 from '../FMAS/AddBudget';
-// import FMASSUB3 from '../FMAS/EditBudget';
-// import FMASSUB4 from '../FMAS/BudgetReport';
-// import FMASSUB5 from '../FMAS/RET_TransactionDashboard';
-// import FMASSUB6 from '../FMAS/RET_AddTranction';
-// import FMASSUB7 from '../FMAS/RET_EditTransaction';
-// import FMASSUB8 from './FMAS/RET_TransactionReport';
-// import FMASSUB9 from './FMAS/PM_PayrollTable';
-// import FMASSUB10 from './FMAS/PM_AddPayroll';
-// import FMASSUB11 from './FMAS/PM_EditPayroll';
-// import FMASSUB12 from './FMAS/PM_PayrollReport';
-// import FMASSUB13 from './FMAS/FM_FinancialTable';
-// import FMASSUB14 from './FMAS/FM_FinancialReport';
-// import FMASSUB15 from './FMAS/AM_AuditTable';
-// import FMASSUB16 from './FMAS/AM_AuditReport';
 import CDSMSUB1 from '../CDSM/PPS_Calendera';
 import CDSMSUB2 from '../CDSM/PPS_ProposedProgram';
 import CDSMSUB3 from '../CDSM/PPS_ProgramSchedule';
@@ -65,8 +56,8 @@ import Header_subscreen from '../Navigation/Header_subscreen';
 import CustomDrawerContent from '../Navigation/CustomDrawerContent';
 import HomeScreen from '../Screen/HomeScreen';
 // import RequestDocument from '../Resident Information and CM/RequestDocument';
-// import CustomHeaderTitle from '../Navigation/CustomHeader_RET';
-// import CustomHeader_BPM from '../Navigation/CustomerHeader_BGP';
+import CustomHeaderTitle from '../Navigation/CustomHeader_RET';
+import CustomHeader_BPM from '../Navigation/CustomerHeader_BGP';
 // import ResidentDocumentRequest from '../Resident Information and CM/ResidentDocumentRequest';
 // import SubScreen4 from '../Resident Information and CM/CensusData';
 // import ResidentRecords from '../Resident Information and CM/ResidentRecords';
@@ -1056,6 +1047,27 @@ const BPMStack = () => (
             ),
         })}
     />
+    <Stack.Screen 
+        name="budgetadd" 
+        component={AddBudget} 
+        options={({ navigation }) => ({
+            headerStyle: {
+                backgroundColor: '#710808', // Set header background color to maroon
+            },
+            headerTintColor: '#fff', // Set header text color to white
+            headerTitleAlign: 'center', // Center the header title
+            headerTitle: () => <CustomHeader_BPM navigation={navigation} />,
+            headerLeft: () => (
+                <TouchableOpacity
+                    style={{ marginLeft: -8,
+                     }}
+                    onPress={() => navigation.toggleDrawer()}
+                >
+                    <Ionicons name="menu" size={40} color="white" />
+                </TouchableOpacity>
+            ),
+        })}
+    />
 </Stack.Navigator>
 );
 
@@ -1066,6 +1078,26 @@ const BPMStack = () => (
       <Stack.Screen 
         name="REVENUE AND EXPENSE TRACKING" 
         component={FMAS4} 
+        options={({ navigation }) => ({
+          headerStyle: {  
+            backgroundColor: '#710808', // Set header background color to maroon
+          },
+          headerTintColor: '#fff', // Set header text color to white
+          headerTitleAlign: 'center',
+          headerTitle: () => <CustomHeaderTitle navigation={navigation} />,
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: -8 }}
+              onPress={() => navigation.toggleDrawer()}
+            >
+              <Ionicons name="menu" size={40} color="white" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+       <Stack.Screen 
+        name="transactadd" 
+        component={TransactAdd} 
         options={({ navigation }) => ({
           headerStyle: {  
             backgroundColor: '#710808', // Set header background color to maroon
@@ -1109,7 +1141,26 @@ const PMStack = () => (
                     </TouchableOpacity>
                 ),
             })}
-        />
+        /><Stack.Screen 
+        name="payrolladd" 
+        component={AddPayroll} 
+        options={({ navigation }) => ({
+            headerStyle: {
+                backgroundColor: '#710808', // Set header background color to maroon
+            },
+            headerTintColor: '#fff', // Set header text color to white
+            headerTitleAlign: 'center', // Center the header title
+            headerLeft: () => (
+                <TouchableOpacity
+                    style={{ marginLeft: -8,
+                     }}
+                    onPress={() => navigation.toggleDrawer()}
+                >
+                    <Ionicons name="menu" size={40} color="white" />
+                </TouchableOpacity>
+            ),
+        })}
+    />
     </Stack.Navigator>
 );
 
@@ -1135,6 +1186,26 @@ const FMStack = () => (
                 ),
             })}
         />
+        <Stack.Screen 
+            name="financialadd" 
+            component={AddFinancial} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
     </Stack.Navigator>
 );
 
@@ -1143,6 +1214,26 @@ const AuditStack1 = () => (
         <Stack.Screen 
             name="AUDIT MANAGEMENT" 
             component={FMAS1} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+         <Stack.Screen 
+            name="auditadd" 
+            component={AuditAdd} 
             options={({ navigation }) => ({
                 headerStyle: {
                     backgroundColor: '#710808', // Set header background color to maroon
@@ -2370,6 +2461,36 @@ export default function App() {
         name="History"
         component={History}
         options={{ title: 'History' }}
+      />
+     <Stack.Screen
+        name="programs"
+        component={Programs}
+        options={{ title: <Text>'Program List'</Text> }}
+      />
+      <Stack.Screen
+        name="programdetail"
+        component={ProgramDetail}
+        options={{ title: <Text>'Program Detail'</Text> }}
+      />
+      <Stack.Screen
+        name="budgetadd"
+        component={AddBudget}
+        options={{ title: <Text>'Add Budget'</Text> }}
+      />
+      <Stack.Screen
+        name="transactadd"
+        component={TransactAdd}
+        options={{ title: <Text>'Add Transaction'</Text> }}
+      />
+      <Stack.Screen
+        name="payrolladd"
+        component={AddPayroll}
+        options={{ title: <Text>'Add Payroll'</Text> }}
+      />
+      <Stack.Screen
+        name="financialadd"
+        component={AddFinancial}
+        options={{ title: <Text>'Add Financial Report'</Text> }}
       />
       <Stack.Screen
         name="BeneficiaryRequests"

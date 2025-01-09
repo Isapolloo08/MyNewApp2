@@ -122,8 +122,7 @@ const Blotter = () => {
       !description ||
       !complainName ||
       !phoneNumber ||
-      !address ||
-      !respoInfoArray.length
+      !address
     ){
       Alert.alert("Error", "Please fill in all the fields correctly.");
       return;
@@ -132,7 +131,7 @@ const Blotter = () => {
     // console.log(selectedIncident);
     console.log("sumbitss");
     axios.post('http://brgyapp.lesterintheclouds.com/submitBlotter.php', {
-      newdate, newhour, newminute, newPeriod, selectedPlace, selectedIncident, description, complainName, phoneNumber, resID, addressID, address, respoInfoArray, selectedImages, selectedProceed})
+      newdate, newhour, newminute, newPeriod, selectedPlace, selectedIncident, description, complainName, phoneNumber, resID, addressID, address, respoInfoArray, selectedImages, selectedProceed, userIDD})
     .then(response=>{
       if(response.data.success){
         Alert.alert('Succesful', response.data.message);
@@ -166,6 +165,10 @@ const Blotter = () => {
   };
 
   const addNewResPress = () => {
+    if(resiInfo == ''){
+      Alert.alert('Error', 'Please enter name first.');
+      return;
+    }
     if(respondentID == null){
       var resInfo = {
         id: respoInfoArray.length + 1,
@@ -178,7 +181,6 @@ const Blotter = () => {
         RespondentName: resiInfo
       }
     }
-
     setRespondentID(null);
     setRespoInfoArray([...respoInfoArray, resInfo]);
     setResiInfo('');
@@ -373,6 +375,37 @@ const Blotter = () => {
     }
   };
 
+  const handleCheckboxChange = (newValue) => {
+    setChecked(newValue);
+    console.log("hiii");
+    setRespoInfoArray([]);
+  };
+
+  const handleFocus = () => {
+    if (phoneNumber === '') {
+      setPhoneNumber('+639');
+    }
+  };
+
+  const handlePhoneChangeText = (text) => {
+    let cleanedText = text.replace(/[^0-9+]/g, ''); // Remove non-numeric characters
+    if (cleanedText.length < 5) {
+      cleanedText = '+639'; // Set default prefix if text is less than 5 characters
+    } else if (cleanedText.length > 13) {
+      cleanedText = cleanedText.slice(0, 13); // Limit the length to 13 characters
+    }
+  
+    setPhoneNumber(cleanedText); // Set the cleaned phone number
+  };
+
+  const handleBlur = () => {
+    // Format the number when focus is lost
+    if (phoneNumber.length === 13) {
+      const formatted = phoneNumber.replace(/(\+63)(\d{3})(\d{3})(\d{4})/, '+63 $2 $3 $4');
+      setPhoneNumber(formatted);
+    }
+  };
+
   return (
     <SafeAreaView style={{marginHorizontal: 1, flex: 1, paddingBottom: 15, backgroundColor: '#F2F3F7', paddingTop: 40}}>
       <ScrollView style={{backgroundColor: '#F2F3F7'}}>
@@ -413,10 +446,22 @@ const Blotter = () => {
                           date.getMonth() === currentDate.getMonth() &&
                           date.getFullYear() === currentDate.getFullYear();
 
-                        // if (isToday && selectedDate.getTime() > currentDate.getTime()) {
-                        //   alert("You can't select a future time!");
-                        //   return; // Do nothing if time is invalid
-                        // }
+                          if(isToday && selectedDate.toLocaleTimeString() > currentDate.toLocaleTimeString()){
+                            console.log("hiii");
+                            Alert.alert("Invalid Time",
+                              "You can't select a future time!",
+                              [
+                                {
+                                  text: "OK",
+                                  onPress: () => {
+                                    hourSelected('HH');
+                                    minuteSelected('MM');
+                                    periodSelected('AM');
+                                  }
+                                }
+                              ],
+                              { cancelable: false });
+                          }
                       }
                       onChanges(event, selectedDate);
                     }}
@@ -507,7 +552,10 @@ const Blotter = () => {
             placeholder='Phone Number'
             multiline={false}
             value={phoneNumber}
-            onChangeText={text => setPhoneNumber(text)}
+            onChangeText={handlePhoneChangeText}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            keyboardType="numeric"
           />
           <Text style={styles.secondaryText}>
             Address:<Text style={styles.required}>*</Text>
@@ -524,7 +572,7 @@ const Blotter = () => {
         
         <View style={styles.respoInformation}>
           <View style={{flexDirection: 'row'}}>
-            <Checkbox value={isChecked} onValueChange={setChecked} style={{marginRight: 5, transform:[{scale: .8}]}}/>
+            <Checkbox value={isChecked} onValueChange={handleCheckboxChange} style={{marginRight: 5, transform:[{scale: .8}]}}/>
             <Text style={{fontSize: 16, marginBottom: 5}}>Unidentified Respondent/s:</Text>
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
