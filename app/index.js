@@ -7,12 +7,12 @@ import Modal from 'react-native-modal';
 import { StyleSheet, TouchableOpacity} from 'react-native';
 import 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import FMAS1 from './FMAS/AuditManagement';
-// import FMAS5 from './FMAS/BudgetPlanningandMonitoring';
-// import FMAS2 from './FMAS/FinancialManagement';
-// import FMAS3 from './FMAS/PayrollManagement';
-// import FMAS4 from './FMAS/RevenueandExpenseTracking';
-// import IRCM2 from './Incident Report and CM/BlotterFrom';
+import FMAS1 from '../FMAS/audit';
+import FMAS5 from '../FMAS/budgetadd';
+import FMAS2 from '../FMAS/financial';
+import FMAS3 from '../FMAS/pa';
+import FMAS4 from '../FMAS/RevenueandExpenseTracking';
+import IRCM2 from '../Incident Report and CM/BlotterFrom';
 // import IRCM1 from './Incident Report and CM/BlotterList';
 // import IRCM3 from './Incident Report and CM/CaseReport';
 // import IRCM4 from './Incident Report and CM/SummonSchedule';
@@ -468,6 +468,81 @@ const ProgramStack = () => (
       />
     </Stack.Navigator>
   );
+
+  const EventsStackNavigator = ({ navigation }) => (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: '#7B0A0A' },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: { fontWeight: 'bold' },
+      }}
+    >
+      <Stack.Screen
+        name="EventsList"
+        component={EventsResidents}
+        options={{
+          title: 'Events',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+              <Ionicons
+                name="menu"
+                size={28}
+                color="#FFFFFF"
+                style={{ marginLeft: 10 }}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="EventOverview"
+        component={EventOverview}
+        options={{ title: 'Event Overview' }}
+      />
+      <Stack.Screen
+        name="SubmitRequirements"
+        component={SubmitRequirements}
+        options={{ title: 'Submit Requirements' }}
+      />
+    </Stack.Navigator>
+  );
+  
+  
+  // Stack Navigator for Notifications
+  function NotificationsStackNavigator({ navigation }) {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: '#7B0A0A' },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: { fontWeight: 'bold' },
+        }}
+      >
+        <Stack.Screen
+          name="NotificationList"
+          component={Notifications}
+          options={{
+            title: 'Notifications',
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <Ionicons
+                  name="menu"
+                  size={28}
+                  color="#FFFFFF"
+                  style={{ marginLeft: 10 }}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="NotificationDetails"
+          component={NotificationDetails}
+          options={{ title: 'Notification Details' }}
+        />
+      </Stack.Navigator>
+    );
+  }
   
   const BeneficiaryStack = () => (
     <Stack.Navigator
@@ -1234,7 +1309,7 @@ const PPSStack = () => (
 const EventStack = () => (
     <Stack.Navigator>
       <Stack.Screen 
-        name="Events" 
+        name="Eventss" 
         component={CEvents} 
         options={({ navigation }) => ({
           headerStyle: {  
@@ -1286,7 +1361,7 @@ const EventStack = () => (
 const RMStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="ResourceManagement" 
+            name="Resource Management" 
             component={CResources} 
             options={({ navigation }) => ({
                 header: () => <Header_subscreen navigation={navigation} />,
@@ -1921,7 +1996,7 @@ function DrawerNavigator() {
             />
                 <Drawer.Screen
                 name="Events"
-                component={EventStack}
+                component={EventsStackNavigator}
                 options={{
                     headerShown: false,
                     // No drawerLabel option means the label will not be shown
@@ -1938,11 +2013,14 @@ function DrawerNavigator() {
             <Drawer.Screen
                 name="BeneficiaryManagement"
                 component={BM}
-                options={{ header: () => <Header_subscreen title={'Welcome'} /> }}
+               options={{
+                    headerShown: true,
+                    // No drawerLabel option means the label will not be shown
+                }}
             />
             <Drawer.Screen
                 name="Notification"
-                component={NotificationStack}
+                component={NotificationsStackNavigator}
                 options={{ header: () => <Header_subscreen title={'Welcome'} /> }}
              />
               <Drawer.Screen
@@ -2282,30 +2360,7 @@ export default function App() {
         component={CMaterials}
         options={{ title: 'Materials' }}
       />
-      <Stack.Screen
-        name="BeneficiaryManagement"
-        component={BM}
-        options={({ navigation }) => ({
-            headerTitle: 'BeneficiaryManagement',
-            headerTitleAlign: 'center',
-                headerStyle: {
-                    backgroundColor: '#710808', // Red background color
-                },
-                headerTintColor: '#FFFFFF', // Text color in header
-                headerTitleStyle: {
-                    fontWeight: 'bold', // Style for header title
-                
-                },
-            headerLeft: () => (
-                <TouchableOpacity
-                    style={{ marginStart: 'auto', }}
-                    onPress={() => navigation.toggleDrawer()}
-                >
-                    <Ionicons name="menu" size={40} color="white" />
-                </TouchableOpacity>
-            ),
-        })}
-      />
+    
       <Stack.Screen
         name="Applicants"
         component={Applicants}

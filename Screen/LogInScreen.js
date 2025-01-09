@@ -68,7 +68,7 @@ const LoginScreen = () => {
     //             console.error('There was an error logging in!', error);
     //         });
   };
-;v 
+;
   const saveUsersData = async (userIDs) => {
     const keys = 'UserID';
   

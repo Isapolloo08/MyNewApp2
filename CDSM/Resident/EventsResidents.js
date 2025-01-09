@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
 
@@ -35,21 +35,24 @@ export default function EventsResidents({ navigation }) {
               startFormatted: formatDateTime(event.start),
               endFormatted: formatDateTime(event.end),
             }))
-            .sort((a, b) => new Date(a.start) - new Date(b.start)); // Sort by start date
-
+            .sort((a, b) => new Date(a.start) - new Date(b.start));
+  
           setAllEvents(processedEvents);
           setEvents(processedEvents);
         } else {
-          Alert.alert('Error', 'Failed to fetch events: ' + response.data.message);
+          console.error('Fetch events failed:', response.data);
+          const errorMessage = response.data.message || 'Unknown error occurred.';
+          Alert.alert('Error', `Failed to fetch events: ${errorMessage}`);
         }
       } catch (error) {
         console.error('Error fetching events:', error);
         Alert.alert('Error', 'Failed to fetch events. Please try again later.');
       }
     };
-
+  
     fetchEvents();
   }, []);
+  
 
   const handleDateSelect = (day) => {
     setSelectedDate(day.dateString);
@@ -74,71 +77,71 @@ export default function EventsResidents({ navigation }) {
   }, { [selectedDate || today]: { selected: true, selectedColor: '#7B0A0A' } });
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Calendar</Text>
-        <Calendar
-          onDayPress={handleDateSelect}
-          markedDates={markedDates}
-          theme={{
-            selectedDayBackgroundColor: '#7B0A0A',
-            todayTextColor: '#7B0A0A',
-            arrowColor: '#7B0A0A',
-            dayTextColor: '#3B3B3B',
-            selectedDayTextColor: '#FFFFFF',
-          }}
-        />
-      </View>
+    <FlatList
+      style={styles.container}
+      data={events}
+      keyExtractor={(item) => item.id?.toString()}
+      renderItem={({ item }) => {
+        const isSameDate = item.startFormatted.fullDate === item.endFormatted.fullDate;
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>{selectedDate ? `Events on ${selectedDate}` : 'Upcoming Events'}</Text>
-
-        {selectedDate && (
-          <TouchableOpacity style={styles.backButton} onPress={handleBackToDefault}>
-            <Text style={styles.backButtonText}>← Back</Text>
+        return (
+          <TouchableOpacity
+            style={styles.eventContainer}
+            onPress={() => navigation.navigate('EventOverview', { event: item })}
+          >
+            <View style={styles.dateContainer}>
+              <Text style={styles.dateDay}>{item.startFormatted.day}</Text>
+              <Text style={styles.dateMonth}>{item.startFormatted.month}</Text>
+            </View>
+            <View style={styles.detailsContainer}>
+              <Text style={styles.eventTitle}>{item.title}</Text>
+              <Text style={styles.eventDetail}>
+                <Text style={styles.bold}>WHEN: </Text>
+                {isSameDate
+                  ? `${item.startFormatted.fullDate}, ${item.startFormatted.time} - ${item.endFormatted.time}`
+                  : `${item.startFormatted.fullDate}, ${item.startFormatted.time} - ${item.endFormatted.fullDate}, ${item.endFormatted.time}`}
+              </Text>
+              <Text style={styles.eventDetail}>
+                <Text style={styles.bold}>WHERE: </Text>
+                {item.location}
+              </Text>
+              <Text style={styles.eventDetail}>
+                <Text style={styles.bold}>STATUS: </Text>
+                {item.status}
+              </Text>
+              <Text style={styles.seeDetails}>See details</Text>
+            </View>
           </TouchableOpacity>
-        )}
-
-        <FlatList
-          data={events}
-          keyExtractor={(item) => item.id?.toString()}
-          renderItem={({ item }) => {
-            const isSameDate = item.startFormatted.fullDate === item.endFormatted.fullDate;
-
-            return (
-              <TouchableOpacity
-                style={styles.eventContainer}
-                onPress={() => navigation.navigate('EventOverview', { event: item })}
-              >
-                <View style={styles.dateContainer}>
-                  <Text style={styles.dateDay}>{item.startFormatted.day}</Text>
-                  <Text style={styles.dateMonth}>{item.startFormatted.month}</Text>
-                </View>
-                <View style={styles.detailsContainer}>
-                  <Text style={styles.eventTitle}>{item.title}</Text>
-                  <Text style={styles.eventDetail}>
-                    <Text style={styles.bold}>WHEN: </Text>
-                    {isSameDate
-                      ? `${item.startFormatted.fullDate}, ${item.startFormatted.time} - ${item.endFormatted.time}`
-                      : `${item.startFormatted.fullDate}, ${item.startFormatted.time} - ${item.endFormatted.fullDate}, ${item.endFormatted.time}`}
-                  </Text>
-                  <Text style={styles.eventDetail}>
-                    <Text style={styles.bold}>WHERE: </Text>
-                    {item.location}
-                  </Text>
-                  <Text style={styles.eventDetail}>
-                    <Text style={styles.bold}>STATUS: </Text>
-                    {item.status}
-                  </Text>
-                  <Text style={styles.seeDetails}>See details</Text>
-                </View>
+        );
+      }}
+      ListHeaderComponent={
+        <View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Calendar</Text>
+            <Calendar
+              onDayPress={handleDateSelect}
+              markedDates={markedDates}
+              theme={{
+                selectedDayBackgroundColor: '#7B0A0A',
+                todayTextColor: '#7B0A0A',
+                arrowColor: '#7B0A0A',
+                dayTextColor: '#3B3B3B',
+                selectedDayTextColor: '#FFFFFF',
+              }}
+            />
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{selectedDate ? `Events on ${selectedDate}` : 'Upcoming Events'}</Text>
+            {selectedDate && (
+              <TouchableOpacity style={styles.backButton} onPress={handleBackToDefault}>
+                <Text style={styles.backButtonText}>← Back</Text>
               </TouchableOpacity>
-            );
-          }}
-          ListEmptyComponent={<Text style={styles.noEventText}>No events scheduled for this date.</Text>}
-        />
-      </View>
-    </ScrollView>
+            )}
+          </View>
+        </View>
+      }
+      ListEmptyComponent={<Text style={styles.noEventText}>No events scheduled for this date.</Text>}
+    />
   );
 }
 
